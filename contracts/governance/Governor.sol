@@ -244,6 +244,8 @@ abstract contract Governor is Context, ERC165, EIP712, Nonces, IGovernor, IERC72
     /**
      * @dev Get the voting weight of `account` at a specific `timepoint`, for a vote as described by `params`.
      */
+     // 实现于 GovernorVotes.sol，核心查找逻辑在Votes.sol，二分法查找
+     // erc20委托投票权默认是全部balance: _getVotingUnits
     function _getVotes(address account, uint256 timepoint, bytes memory params) internal view virtual returns (uint256);
 
     /**
@@ -638,7 +640,7 @@ abstract contract Governor is Context, ERC165, EIP712, Nonces, IGovernor, IERC72
         _validateStateBitmap(proposalId, _encodeStateBitmap(ProposalState.Active));
 
         uint256 weight = _getVotes(account, proposalSnapshot(proposalId), params);
-        _countVote(proposalId, account, support, weight, params);
+        _countVote(proposalId, account, support, weight, params); // 统计票数的逻辑，需要被实现
 
         if (params.length == 0) {
             emit VoteCast(account, proposalId, support, weight, reason);

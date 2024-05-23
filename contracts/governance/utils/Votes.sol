@@ -35,8 +35,10 @@ abstract contract Votes is Context, EIP712, Nonces, IERC5805 {
     bytes32 private constant DELEGATION_TYPEHASH =
         keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
 
+     // A委托给B投票，_delegatee[A]=B
     mapping(address account => address) private _delegatee;
 
+    // 被委托人 -> [blockNum1:票数1, blockNum2:票数2, ...]
     mapping(address delegatee => Checkpoints.Trace208) private _delegateCheckpoints;
 
     Checkpoints.Trace208 private _totalCheckpoints;
