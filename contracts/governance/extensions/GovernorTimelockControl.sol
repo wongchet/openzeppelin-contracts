@@ -90,7 +90,11 @@ abstract contract GovernorTimelockControl is Governor {
         uint256 delay = _timelock.getMinDelay();
 
         bytes32 salt = _timelockSalt(descriptionHash);
+        // 提案加入队列中
+        // proposalId -> hashOperationId
         _timelockIds[proposalId] = _timelock.hashOperationBatch(targets, values, calldatas, 0, salt);
+        // hashOperationId -> executeTime
+        // 需要执行权限：onlyRole(PROPOSER_ROLE)
         _timelock.scheduleBatch(targets, values, calldatas, 0, salt, delay);
 
         return SafeCast.toUint48(block.timestamp + delay);
